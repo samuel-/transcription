@@ -1,13 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 ## pour les chevronnées de la transcription, avec tout mon foie, samuel 
-## 
 
 import vlc
-#import easygui
 import keyboard
-#import glob
 from time import sleep
 import json
-#from po import ttkTimer
 from pathlib import Path, WindowsPath
 
 try:
@@ -17,9 +15,8 @@ try:
 	from tkinter import filedialog
 #	from Tkinter import *
 except:
-	print("erreur")
+	print("erreur d'import de Tk")
 	
-
 with open('config.json') as json_file:
     config = json.load(json_file)
 
@@ -86,7 +83,6 @@ def updaterecentfiles(soundPath, inlist, islast, index):
 	
 	with open('config.json', 'w') as outfile:
 		json.dump(config, outfile)
-	
 	fillMenu()
 
 def openfile(f=None):
@@ -152,10 +148,6 @@ def openfile(f=None):
 	
 	if config['options']['playlast'] == 'False':
 		playpause()
-	
-
-def effacerrecents():
-	pass
 
 def playpause():
 	if player.is_playing():
@@ -232,7 +224,7 @@ def update_clock(_=None):
 	#print('tic')
 
 
-def fermer():
+def close():
 	print('byebye')
 	if config['options']['lastpos'] == 'True' and mediafile != None:
 		reclastpos()
@@ -243,7 +235,7 @@ def fermer():
 
 root = Tk()
 root.title("Transcription ☺☻♥♦♣♠•◘○")
-root.protocol("WM_DELETE_WINDOW", fermer)
+root.protocol("WM_DELETE_WINDOW", close)
 s = Style()
 #print(s.theme_names())
 #s.theme_use('vista')
@@ -273,7 +265,6 @@ def fillMenu():
 			path = last[i]['path']
 			recentfiles.add_command(label=nom, command=lambda bpath=path:openfile(bpath))
 menubar = Menu(root)
-# create a pulldown menu, and add it to the menu bar
 recentfiles = Menu(menubar, tearoff=0)
 fillMenu()
 menubar.add_cascade(label="Fichiers Récents", menu=recentfiles)
@@ -285,18 +276,13 @@ configmenu = Menu(menubar, tearoff=0)
 configmenu.add_checkbutton(label="Lire les fichiers dès l'ouverture", variable=playlast, command=lambda:configit('playlast', playlast))
 configmenu.add_checkbutton(label="Ouvrir tout de suite le dernier fichier lu", variable=openlast, command=lambda:configit('readlast', readlast))
 configmenu.add_checkbutton(label="Se souvenir de la position de lecture", variable=lastpos, command=lambda:configit('lastpos', lastpos))
-#configmenu.add_checkbutton(label="Se souvenir des fichiers récents")
-#configmenu.add_separator()
-#configmenu.add_command(label="Raccourcis et réglages")
-
 menubar.add_cascade(label="Options", menu=configmenu)
 ###########################
 menubar.add_separator()
-menubar.add_command(label="Quitter", command=fermer)
+menubar.add_command(label="Quitter", command=close)
 ###########################
 root.config(menu=menubar)
 ###########################
-
 # progression
 #w2 = Scale(root, from_=0, to=10, length=600, label="durée <<", showvalue=1, resolution=-1, orient=HORIZONTAL)
 Label(root, textvariable=playingfile).pack()
@@ -313,18 +299,13 @@ Button(root, text="<<", command=lambda:back(0)).pack(side=LEFT, padx=5, pady=5)
 Button(root, text="Play/Pause", command=playpause).pack(side=LEFT, padx=5, pady=5)
 Button(root, text=">>", command=lambda:back(0,-1)).pack(side=LEFT, padx=5, pady=5)
 Button(root, text=">>>", command=lambda:back(1,-1)).pack(side=LEFT, padx=5, pady=5)
-
 Button(root, text="§", command=setmemory).pack(side=LEFT, padx=5, pady=5)
 Button(root, text="§!", command=tomemory).pack(side=LEFT, padx=5, pady=5)
 #Button(root, text="%", command=memory).pack()
-
 Button(root, text="+ lent", command=lambda:setrate(-0.125)).pack(side=LEFT, padx=5, pady=5)
 Button(root, text="x 1", command=lambda:setrate(-1)).pack(side=LEFT, padx=5, pady=5)
 Button(root, text="+ rapide", command=lambda:setrate(0.125)).pack(side=LEFT, padx=5, pady=5)
 Label(root, textvariable=rateLabel).pack(side=LEFT, padx=5, pady=5)
-#TTKScale(root, from_=0.25, to=3, length=100, orient=HORIZONTAL, command=None, variable=rate).pack()
-
-#Button(root, text="Quitter", command=root.destroy).pack(side = RIGHT)
 
 legende = "play/pause: Alt Gr        "
 legende += "<</>>: (Ctrl) Alt ⇔        "
@@ -332,29 +313,17 @@ legende += "§: right_Shift        "
 legende += "→§: Alt right_Shift        "
 legende += "vitesse: Alt ⇕       "
 Label(root, text=legende).pack(side=BOTTOM, fill=X, padx=5, pady=5)
-##⇕ ⇒⇐⇑⇓⇔⇕⇕
-# play/pause: Alt Gr      <</>>: (Ctrl) Alt ⇔   	§: right_Shift    →§: Alt right_Shift
 
 keyboard.add_hotkey('alt gr', playpause)
-
 keyboard.add_hotkey('alt+gauche', lambda:back(0))
 keyboard.add_hotkey('ctrl+alt+gauche', lambda:back(1))
-
 keyboard.add_hotkey('alt+droite', lambda:back(0,-1))
 keyboard.add_hotkey('ctrl+alt+droite', lambda:back(1,-1))
-
 keyboard.add_hotkey('right shift', setmemory)
 keyboard.add_hotkey('alt+right shift', tomemory)
-
-#volume
-#keyboard.add_hotkey('ctrl+haut', tomemory)
-#keyboard.add_hotkey('ctrl+bas', tomemory)
-
 keyboard.add_hotkey('alt+haut', lambda:setrate(0.125))
 keyboard.add_hotkey('alt+bas', lambda:setrate(-0.125))
 keyboard.add_hotkey('alt+bas+haut', lambda:setrate(-1))
-
-
 
 if config['options']['openlast'] == 'True':
 	try:
@@ -367,8 +336,5 @@ update_clock(None)
 mainloop()
 #player.release()
 #root.destroy()
-
 #keyboard.wait()
-
-
 

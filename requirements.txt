@@ -1,7 +1,6 @@
 # python==3.7+
 # vlc
-# attention à la cohérence 64bits / 32bits
-easygui==0.98.1
+# attention Ã  la cohÃ©rence 64bits / 32bits
 keyboard==0.13.4
 pyliblo==0.10.0
 python-vlc==3.0.7110
